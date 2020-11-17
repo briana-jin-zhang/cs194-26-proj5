@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stitching Photo Mosaics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1>Stitching Photo Mosaics</h1>
+    <h2>Shooting the Pictures</h2>
+    <p>
+        These are some photo sequences I plan to stitch together:
+    </p>
+    <div class = 'container'>
+        <div class='imgContainer'> 
+            <img src="images/g0/0.jpg" width=400>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g0/1.jpg" width=400>
+        </div>
+    </div>
+    <div class = 'container'>
+        <div class='imgContainer'> 
+            <img src="images/g1/0.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g1/1.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g1/2.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g1/3.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g1/4.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g1/5.jpg" width=300>
+        </div>
+    </div>
+    <div class = 'container'>
+        <div class='imgContainer'> 
+            <img src="images/g2/0.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g2/1.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g2/2.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g2/3.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g2/4.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/g2/5.jpg" width=300>
+        </div>
+    </div>
+    <h2>Recover Homographies</h2>
+    <p>
+        I used least squares on a matrix solving Hx = w * x' that forced the 9th element to be 1.
+    </p>
+    <h2>Warp the Images</h2>
+    <p>
+        I applied to warping too the image by computing each new pixel's position, shifting via a 
+        translation matrix to make sure the new image would be in bounds, and used cv2.remap to 
+        interpolate from the original image.
+    </p>
+
+    <h2>
+        Image Rectification
+    </h2>
+
+    <p>
+        I calculated the homography of images with tiles to a square. Then, I warped the images so 
+        that the tiles became squares. 
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/tiles.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'> 
+            <img src="images/tiles2.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/tiles3.jpg" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/tiles_rect.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/tiles2_rect.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/tiles3_rect.png" width=300>
+        </div>
+
+    </div>
+
+  </body>
+</html>
