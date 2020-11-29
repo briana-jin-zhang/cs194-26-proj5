@@ -8,9 +8,9 @@
   </head>
   <body>
     <h1>Stitching Photo Mosaics</h1>
-    <h2>Shooting the Pictures</h2>
+    <h3>Shooting the Pictures</h3>
     <p>
-        These are some photo sequences I plan to stitch together:
+        Here are some of the pictures I originally planned to stitch together:
     </p>
     <div class = 'container'>
         <div class='imgContainer'> 
@@ -23,68 +23,68 @@
     </div>
     <div class = 'container'>
         <div class='imgContainer'> 
-            <img src="images/g1/0.jpg" width=300>
+            <img src="images/g1/0.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g1/1.jpg" width=300>
+            <img src="images/g1/1.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g1/2.jpg" width=300>
+            <img src="images/g1/2.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g1/3.jpg" width=300>
+            <img src="images/g1/3.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g1/4.jpg" width=300>
+            <img src="images/g1/4.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g1/5.jpg" width=300>
+            <img src="images/g1/5.jpg" width=200>
         </div>
     </div>
     <div class = 'container'>
         <div class='imgContainer'> 
-            <img src="images/g2/0.jpg" width=300>
+            <img src="images/g2/0.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g2/1.jpg" width=300>
+            <img src="images/g2/1.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g2/2.jpg" width=300>
+            <img src="images/g2/2.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g2/3.jpg" width=300>
+            <img src="images/g2/3.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g2/4.jpg" width=300>
+            <img src="images/g2/4.jpg" width=200>
         </div>
 
         <div class='imgContainer'> 
-            <img src="images/g2/5.jpg" width=300>
+            <img src="images/g2/5.jpg" width=200>
         </div>
     </div>
-    <h2>Recover Homographies</h2>
+    <h3>Recover Homographies</h3>
     <p>
         I used least squares on a matrix solving Hx = w * x' that forced the 9th element to be 1.
     </p>
-    <h2>Warp the Images</h2>
+    <h3>Warp the Images</h3>
     <p>
         I applied to warping too the image by computing each new pixel's position, shifting via a 
         translation matrix to make sure the new image would be in bounds, and used cv2.remap to 
         interpolate from the original image.
     </p>
 
-    <h2>
+    <h3>
         Image Rectification
-    </h2>
+    </h3>
 
     <p>
         I calculated the homography of images with tiles to a square. Then, I warped the images so 
@@ -103,7 +103,9 @@
         <div class='imgContainer'>
             <img src="images/tiles3.jpg" width=300>
         </div>
+    </div>
 
+    <div class = 'container'>
         <div class='imgContainer'>
             <img src="images/tiles_rect.png" width=300>
         </div>
@@ -115,8 +117,343 @@
         <div class='imgContainer'>
             <img src="images/tiles3_rect.png" width=300>
         </div>
-
     </div>
+
+    <h3>Mosaic</h3>
+    <p>
+        Through calculating the homography and warping the image, I am able to create a mosaic. 
+        This is done by finding the homography needed transform one image into another's space
+        and then blending them together. 
+    </p>
+
+    <p>
+        The first step is selecting at least 4 corresponding points in order to compute the homography.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/pts0_1.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/pts0_2.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/pts3_1.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/pts3_2.png" width=300>
+        </div>
+    </div>
+
+    <p>
+        In the second pair of images, I selected more points because I found selecting just 4 points yielded
+        very unstable results. After computing the homography, the new width and height as well as shifts 
+        were calculated based off of the min and max values of x and y in the warped image. The shifts were 
+        applied via an additional translation matrix.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/imgs0_0.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/imgs0_1.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/imgs3_0.png" width=300>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/imgs3_1.png" width=300>
+        </div>
+    </div>
+
+    <p>
+        I tried various types of blending with and without masks.
+        The simplest was having a binary mask with ones for the first image and zeros for the second image.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/simple0.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/simple3.png" width=400>
+        </div>
+    </div>
+
+    <p>
+        After that, I tried blending with a laplacian stack as done in a previous project.
+        I found that there was indeed some good blending, but the problem is that it actually
+        left a strong artifact where the images end. This is because the images blended have 0's 
+        and essentially the unwanted black was blended in. 
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/laplacian0.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/laplacian3.png" width=400>
+        </div>
+    </div>
+
+    <p>
+        I then tried blending with a very smooth mask, a technique I created for a previous project.
+        However, the underlying problem of unwanted black existing in the original image does not go 
+        away and the result was pretty much exactly the same as normal laplacian blending. The next blend 
+        I tried was alpha blending. The problem with this blend was that the overlap becomes markedly 
+        different.  
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/alpha0.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/alpha3.png" width=400>
+        </div>
+    </div>
+
+    <p>
+        I had an idea of only taking an average if both pixels were overlapping. This meant computing 
+        a mask for the overlap, as well as a mask for the non-overlapping portions.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/alpha_mask0.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/alpha_mask3.png" width=400>
+        </div>
+    </div>
+
+    <p>
+        Lastly, I tried simply taking the max of the two images. The result was very good and also very fast.
+        The second image looks slightly off because the homography is imperfect due to the hand selected 
+        points. This is more visible in the above alpha blending, where the two trash cans are clearly 
+        not aligned. I decided I liked the result of max the most, since it was both fast computationally,
+        as well as effective.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/max0.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/max3.png" width=400>
+        </div>
+    </div>
+
+    <h3>Autostitching</h3>
+    <p>
+        To automate the entire process, you need to automate picking pairs of points. 
+    </p>
+
+    <h3>Harris Corners</h3> 
+    <p>
+        The first step in automating picking pairs of points is getting possible points of interest.
+        Harris corners are "corners" in the sense that if you shift a window around that point, the 
+        norm of the window changes drastically. After that is decreasing and picking the best points,
+        the points that not only have the best scores but are also far away from other good points. 
+        That is adaptive non-maximal suppression. I implemented ANMS, but it was really computationally
+        expensive (took almost an hour for one image), so I left it out of my overall algorithm. Instead, 
+        I altered harris corners so that it would pick points that were at least some minimum distance away 
+        that was dependent on the size of the image too reduce the number of corners.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/harris1.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/harris2.png" width=400>
+        </div>
+    </div>
+    <h3>Adaptive Non-Maximal Suppression</h3>
+    <img src="images/anms.png" width=400>
+
+    <h3>Feature Descriptor Extraction</h3>
+    <p>
+        In order to match up the points, you have to have some information around the point to know 
+        how similar two points are. This is simply a 39x39 patch around a point rescaled to 5x5 for 
+        comparison purposes, called feature descriptors.
+    </p>
+
+    <img src="images/fd.png" width=400>
+
+    <h3>Feature Matching</h3>
+    <p>
+        After getting the feature descriptors, we match them up with feature descriptors of 
+        the points of another image to get corresponding points. This is done by comparing 
+        each best patch of a feature descriptor with its second best patch. If the best patch is significantly better 
+        than second best patch, then it is likely that the best patch is its pair. 
+        I originally set the threshold to be .95, later changing it to .99 for threshold. 
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/matches1.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/matches2.png" width=400>
+        </div>
+    </div>
+
+    <h3>RANSAC</h3>
+    <p>
+        There is still one problem, however, which is that homographies are quite sensitive to 
+        even the slightest outlier. To get rid of this problem, I implemented the RANSAC algorithm,
+        which randomly selects four pairs of points, computes their homography, and then count its 
+        inliners, aka the number of points that agree with the homography. This is done by applying 
+        the homography to one point and seeing how much it differs from its pair.
+        The homography with the most inliners is then the derived homography.
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/ransac1.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/ransac2.png" width=400>
+        </div>
+    </div>
+
+    <h3>Results</h3>
+    <img src="images/result3.png" width=600>
+    <img src="images/result2.png" width=600>
+    <img src="images/result1.png" width=600>
+    <img src="images/result5.png" width=600>
+    <img src="images/result7.png" width=600>
+
+    <p>
+        The maximum number of photos I was able to blend together was four. 
+        There were many things I realized while I did this project.
+    </p>
+
+    <p>
+        First was that many of my original photos failed to combine because you need 
+        a substantial amount of overlap. For instance, the images of the houses at night.
+        Because of how automatic stitching uses feature descriptors of size 39x39, you 
+        cannot have points in the region 20 pixels away from all edges. 
+    </p>
+
+    <p>
+        Something else I realized is that you actually need 5 good points yielded by matches
+        because of how RANSAC works. If you only have 4 good points, by how the algorithm works, 
+        all groups of 4 points will equally have 0 inliners even if you as a human can 
+        eyeball 4 good pairs. 
+    </p>
+
+    <p>
+        The original size of the image matters since patches are set to size 39x39. This means 
+        that if an image is resized to be smaller, each patch covers more area. 
+    </p>
+
+    <p>
+        There is also a tradeoff between the number of points. If there are too many points, then 
+        there are too many possibilities and the likelihood that you randomly find 4 good points becomes 
+        smaller. But if there are too little points, then the likelihood that the good points exist within 
+        them is also decreased. To get around this, I increased the number of points by lowering 
+        the minimum distance of harris corners, but also increased the threshold for finding matches.
+    </p>
+
+    <p>
+        I also suspect there is a tradeoff of ransac being deterministic versus random. You can find 
+        all combinations of 4 points using  itertools. If it is deterministic, it is easier to debug 
+        and it is also easier to ensure that you are not retrying the same points. However, if 4 points 
+        are really off, then the next 4 points in the list of combinations is also more likely to be 
+        off since there is a certain ordering. I found that finding random points actually yielded 
+        better results.
+    </p>
+
+
+    <h3>
+        Using original algorithm with automatically found points
+    </h3>
+
+    <p>
+        I also tried to improve the algorithm in three different ways. One was to use my original 
+        mosaic algorithm that utilized points, since RANSAC could also return the inliner points. 
+        The problem with this is that after the new image is created, it is possible that an added 
+        image obscures where the original points were placed. It would be too complicated to calculate 
+        exactly which points would be covered and to alter their homography, so I decided to try other 
+        things instead.
+    </p>
+
+    <p>
+        You can see below how the points seem almost correct due to their relative position, 
+        but become incorrect due to the overlap. Thus, it yielded the interesting result on the right.
+    </p>
+
+        <div class = 'container'>
+            <div class='imgContainer'>
+                <img src="images/ex1_1.png" width=400>
+            </div>
+    
+            <div class='imgContainer'>
+                <img src="images/ex1_2.png" width=400>
+            </div>
+
+            <div class='imgContainer'>
+                <img src="images/interesting_result.png" width=400>
+            </div>
+        </div>
+
+    <p>
+        I thought it might have been the fact that there was so much more of the image to 
+        find points from that the points were not matching. Out of curiosity, I tried to 
+        see what the matching points from RANSAC would be if I just cut a portion of the warped 
+        result of 4 images. I saw that it was a failure. 
+    </p>
+
+    <div class = 'container'>
+        <div class='imgContainer'>
+            <img src="images/fail1.png" width=400>
+        </div>
+
+        <div class='imgContainer'>
+            <img src="images/fail2.png" width=400>
+        </div>
+    </div>
+
+    <p>
+        I reasoned this was possibly because of two reasons: the sizes were too different since my feature 
+        descriptors were not size invariant, or that the image had become too warped so the fds would not 
+        match any more. 
+    </p>
+    
+    <h3>
+       (Bells & Whistles) Adding multiscale processing for corner detection and feature description
+    </h3>
+    <p>
+        I tried to resize the added images to various ratios before applying the rest of the algorithm,
+        much like an image pyramid. For some reason, the best ratio for my images was always 1, and the 5th 
+        image failed to add as always.
+    </p>
+
+    <h3>
+        Warping next left and right images
+    </h3>
+    <p>
+        Similar to how my original algorithm warped the points of the next left and next right images, 
+        I calculated the homographies between each point and altered those instead. Again, it worked for 4
+        images, but failed on the 5th one. 
+    </p>
 
   </body>
 </html>
